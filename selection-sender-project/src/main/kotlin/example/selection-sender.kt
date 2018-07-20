@@ -4,6 +4,7 @@ import kotlinjs.common.getSelectionHtml
 import kotlin.browser.window
 
 fun main(args: Array<String>) {
+    console.log("### listen on 'FETCH_SELECTION_HTML' message")
     chrome.runtime.onMessage.addListener { request, _, sendResponse ->
         console.log("----- on message ----- ")
         console.log(request)

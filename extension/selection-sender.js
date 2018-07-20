@@ -1,23 +1,3 @@
-// ------------------- get-selection-html.js ---------------------- 
-function getSelectionHtml() {
-    var html = "";
-    if (typeof window.getSelection != "undefined") {
-        var sel = window.getSelection();
-        if (sel.rangeCount) {
-            var container = document.createElement("div");
-            for (var i = 0, len = sel.rangeCount; i < len; ++i) {
-                container.appendChild(sel.getRangeAt(i).cloneContents());
-            }
-            html = container.innerHTML;
-        }
-    } else if (typeof document.selection != "undefined") {
-        if (document.selection.type == "Text") {
-            html = document.selection.createRange().htmlText;
-        }
-    }
-    return html;
-}
-
 // ------------------- kotlin.js ---------------------- 
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -38015,8 +37995,16 @@ if (typeof kotlin === 'undefined') {
 }
 this['kotlin-js-commons'] = function (_, Kotlin) {
   'use strict';
+  var $$importsForInline$$ = _.$$importsForInline$$ || (_.$$importsForInline$$ = {});
+  var throwCCE = Kotlin.throwCCE;
   var defineInlineFunction = Kotlin.defineInlineFunction;
   var wrapFunction = Kotlin.wrapFunction;
+  function injectScript($receiver, url) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
+    var script = Kotlin.isType(tmp$ = $receiver.createElement('script'), HTMLScriptElement) ? tmp$ : throwCCE();
+    script.src = url;
+    (tmp$_3 = (tmp$_2 = (tmp$_0 = $receiver.body) != null ? tmp$_0.appendChild(script) : null) != null ? tmp$_2 : (tmp$_1 = $receiver.head) != null ? tmp$_1.appendChild(script) : null) != null ? tmp$_3 : $receiver.appendChild(script);
+  }
   var jsonAs = defineInlineFunction('kotlin-js-commons.kotlinjs.common.jsonAs_287e2$', wrapFunction(function () {
     var Any = Object;
     var throwCCE = Kotlin.throwCCE;
@@ -38025,9 +38013,31 @@ this['kotlin-js-commons'] = function (_, Kotlin) {
       return (tmp$ = {}) == null || Kotlin.isType(tmp$, Any) ? tmp$ : throwCCE();
     };
   }));
+  var getSelection = defineInlineFunction('kotlin-js-commons.kotlinjs.common.getSelection_nz12v2$', function ($receiver) {
+    return $receiver['getSelection']();
+  });
+  function getSelectionHtml($receiver) {
+    var tmp$;
+    if ((tmp$ = $receiver.window['getSelection']()) != null) {
+      var tmp$_0;
+      if ((tmp$_0 = tmp$.rangeCount) != null) {
+        var tmp$_1;
+        var container = Kotlin.isType(tmp$_1 = $receiver.document.createElement('div'), HTMLDivElement) ? tmp$_1 : throwCCE();
+        for (var index = 0; index < tmp$_0; index++) {
+          container.appendChild(tmp$.getRangeAt(index).cloneContents());
+        }
+        return container.innerHTML;
+      }
+    }
+    return null;
+  }
   var package$kotlinjs = _.kotlinjs || (_.kotlinjs = {});
   var package$common = package$kotlinjs.common || (package$kotlinjs.common = {});
+  package$common.injectScript_faw09z$ = injectScript;
   package$common.jsonAs_287e2$ = jsonAs;
+  package$common.getSelection_nz12v2$ = getSelection;
+  $$importsForInline$$['kotlin-js-commons'] = _;
+  package$common.getSelectionHtml_nz12v2$ = getSelectionHtml;
   Kotlin.defineModule('kotlin-js-commons', _);
   return _;
 }(typeof this['kotlin-js-commons'] === 'undefined' ? {} : this['kotlin-js-commons'], kotlin);
@@ -38040,24 +38050,29 @@ if (typeof kotlin === 'undefined') {
 if (typeof this['chrome-extension-context-menu-selection-dom-demo'] === 'undefined') {
   throw new Error("Error loading module 'selection-sender-project'. Its dependency 'chrome-extension-context-menu-selection-dom-demo' was not found. Please, check whether 'chrome-extension-context-menu-selection-dom-demo' is loaded prior to 'selection-sender-project'.");
 }
-this['selection-sender-project'] = function (_, Kotlin, $module$chrome_extension_context_menu_selection_dom_demo) {
+if (typeof this['kotlin-js-commons'] === 'undefined') {
+  throw new Error("Error loading module 'selection-sender-project'. Its dependency 'kotlin-js-commons' was not found. Please, check whether 'kotlin-js-commons' is loaded prior to 'selection-sender-project'.");
+}
+this['selection-sender-project'] = function (_, Kotlin, $module$chrome_extension_context_menu_selection_dom_demo, $module$kotlin_js_commons) {
   'use strict';
   var example = $module$chrome_extension_context_menu_selection_dom_demo.example;
   var equals = Kotlin.equals;
+  var getSelectionHtml = $module$kotlin_js_commons.kotlinjs.common.getSelectionHtml_nz12v2$;
   var Unit = Kotlin.kotlin.Unit;
   function main$lambda(request, f, sendResponse) {
     console.log('----- on message ----- ');
     console.log(request);
     if (equals(request, example.FETCH_SELECTION_HTML)) {
-      var selection = getSelectionHtml();
+      var selection = getSelectionHtml(window);
       console.log('---- selection ----');
       console.log(selection);
       console.log('### send selection back');
-      sendResponse(selection);
+      sendResponse(selection != null ? selection : '');
     }
     return Unit;
   }
   function main(args) {
+    console.log("### listen on 'FETCH_SELECTION_HTML' message");
     chrome.runtime.onMessage.addListener(main$lambda);
   }
   var package$example = _.example || (_.example = {});
@@ -38065,4 +38080,4 @@ this['selection-sender-project'] = function (_, Kotlin, $module$chrome_extension
   main([]);
   Kotlin.defineModule('selection-sender-project', _);
   return _;
-}(typeof this['selection-sender-project'] === 'undefined' ? {} : this['selection-sender-project'], kotlin, this['chrome-extension-context-menu-selection-dom-demo']);
+}(typeof this['selection-sender-project'] === 'undefined' ? {} : this['selection-sender-project'], kotlin, this['chrome-extension-context-menu-selection-dom-demo'], this['kotlin-js-commons']);
