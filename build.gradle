@@ -42,7 +42,6 @@ subprojects {
 
 project(':selection-sender-project') {
     kotlinJsBundler {
-        additionalJsFiles = ["${projectDir}/src/main/resources/get-selection-html.js"]
         outputFile = "${rootDir}/extension/selection-sender.js"
     }
 }

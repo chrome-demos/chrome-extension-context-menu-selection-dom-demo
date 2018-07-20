@@ -1,7 +1,7 @@
 package example
 
-@JsName("getSelectionHtml")
-external fun getSelectionHtml(): String
+import kotlinjs.common.getSelectionHtml
+import kotlin.browser.window
 
 fun main(args: Array<String>) {
     chrome.runtime.onMessage.addListener { request, _, sendResponse ->
@@ -9,12 +9,12 @@ fun main(args: Array<String>) {
         console.log(request)
 
         if (request == FETCH_SELECTION_HTML) {
-            val selection = getSelectionHtml()
+            val selection = window.getSelectionHtml()
             console.log("---- selection ----")
             console.log(selection)
 
             console.log("### send selection back")
-            sendResponse(selection)
+            sendResponse(selection ?: "")
         }
     }
 }
