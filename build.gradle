@@ -14,24 +14,41 @@ buildscript {
 
 }
 
-apply plugin: 'kotlin2js'
-apply plugin: 'kotlin-js-bundler'
+allprojects {
+    apply plugin: 'kotlin2js'
 
-kotlinJsBundler {
-    outputFile = "${projectDir}/extension/bundle.js"
+    repositories {
+        mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        jcenter()
+        maven { url 'https://dl.bintray.com/freewind/maven/' }
+    }
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+        compile 'freewind.github.com:kotlin-js-commons:0.6.0'
+        compile "freewind.github.com:chrome-ts2kt:0.3.0"
+        testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
+    }
 }
 
-repositories {
-    mavenLocal()
-    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-    maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
-    jcenter()
-    maven { url 'https://dl.bintray.com/freewind/maven/' }
+subprojects {
+    apply plugin: 'kotlin-js-bundler'
+    dependencies {
+        compile rootProject
+    }
 }
 
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
-    compile 'freewind.github.com:kotlin-js-commons:0.6.0'
-    compile "freewind.github.com:chrome-ts2kt:0.3.0"
-    testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
+project(':selection-sender-project') {
+    kotlinJsBundler {
+        additionalJsFiles = ["${projectDir}/src/main/resources/get-selection-html.js"]
+        outputFile = "${rootDir}/extension/selection-sender.js"
+    }
+}
+
+project('context-menu-project') {
+    kotlinJsBundler {
+        outputFile = "${rootDir}/extension/context-menu.js"
+    }
 }

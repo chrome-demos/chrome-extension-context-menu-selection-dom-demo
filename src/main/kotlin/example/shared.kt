@@ -1,0 +1,3 @@
+package example
+
+val FETCH_SELECTION_HTML = "FETCH_SELECTION_HTML"
